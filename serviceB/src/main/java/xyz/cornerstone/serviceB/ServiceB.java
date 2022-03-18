@@ -32,6 +32,11 @@ final class ServiceB extends ServiceBGrpc.ServiceBImplBase {
         Futures.transform(
                 client.callC(CallCRequest.newBuilder().setRequestCPayload(currentPayload).build()),
                 response -> {
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     responseObserver.onNext(CallBResponse.newBuilder().setResponseBPayload(response + "B").build());
                     responseObserver.onCompleted();
                     return null;

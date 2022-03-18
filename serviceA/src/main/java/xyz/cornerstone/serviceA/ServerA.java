@@ -6,7 +6,7 @@ import io.grpc.ServerBuilder;
 import java.io.IOException;
 
 /**
- * ServerB entry point.
+ * ServerA entry point.
  */
 public class ServerA {
 
