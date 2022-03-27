@@ -1,0 +1,47 @@
+// API definition for Mint service
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "xyz.cornerstone.gateway";
+option java_outer_classname = "GatewayProto";
+
+service GatewayService {
+
+  rpc CreateCurrency (CreateCurrencyGatewayRequest)
+      returns (CreateCurrencyGatewayResponse);
+
+  rpc Mint (MintGatewayRequest)
+      returns (MintGatewayResponse);
+
+  rpc GetTopMintedCurrencies (GetTopMintedCurrenciesGatewayRequest)
+      returns (GetTopMintedCurrenciesGatewayResponse);
+}
+
+message CreateCurrencyGatewayRequest {}
+
+message CreateCurrencyGatewayResponse {
+  string currencyName = 1;
+}
+
+message MintGatewayRequest {
+  string currencyName = 1;
+}
+
+message MintGatewayResponse {
+  int32 newAmount = 1;
+}
+
+message GetTopMintedCurrenciesGatewayRequest {
+  int32 maxNumberOfCurrencies = 1;
+}
+
+message TotalCurrencyMintedGatewayRecord {
+  string currencyName = 1;
+  int32 amount = 2;
+}
+
+message GetTopMintedCurrenciesGatewayResponse {
+  repeated TotalCurrencyMintedGatewayRecord records = 1;
+}
+

@@ -1,0 +1,21 @@
+// API definition for Mint service
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "xyz.cornerstone.serviceB";
+option java_outer_classname = "ServiceBProto";
+
+service ServiceB {
+
+  rpc CallB (CallBRequest)
+      returns (CallBResponse);
+}
+
+message CallBRequest {
+  string requestBPayload = 1;
+}
+
+message CallBResponse {
+  string responseBPayload = 1;
+}

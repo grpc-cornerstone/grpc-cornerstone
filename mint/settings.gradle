@@ -1,0 +1,3 @@
+rootProject.name = 'mint'
+
+includeBuild '../grpc-common'

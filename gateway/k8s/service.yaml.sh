@@ -1,0 +1,46 @@
+#!/bin/bash
+cat <<YAML
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - name: geese
+          image: eu.gcr.io/$GCP_PROJECT/gateway:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090
+          env:
+            - name: foobar
+              value: "$(date +%s)"
+            - name: ZIPKIN_SERVICE_HOST
+              value: "zipkin"
+            - name: ZIPKIN_SERVICE_PORT
+              value: "9411"
+            - name: GCP_PROJECTID
+              value: $GCP_PROJECT
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mint
+spec:
+  type: LoadBalancer
+  selector:
+    app: gateway
+  ports:
+   - port: 8090
+     targetPort: 8090
+     protocol: TCP
+     name: grpc
+YAML

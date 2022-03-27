@@ -1,0 +1,38 @@
+// API definition for Mint service
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "xyz.cornerstone.ledger";
+option java_outer_classname = "LedgerProto";
+
+service LedgerService {
+
+  rpc RecordMinting (RecordMintingRequest)
+      returns (RecordMintingResponse);
+
+  rpc GetTopMintedCurrencies (GetTopMintedCurrenciesRequest)
+      returns (GetTopMintedCurrenciesResponse);
+}
+
+message RecordMintingRequest {
+  string currencyName = 1;
+  int32 increment = 2;
+}
+
+message RecordMintingResponse {
+  int32 newAmount = 1;
+}
+
+message GetTopMintedCurrenciesRequest {
+  int32 maxNumberOfCurrencies = 1;
+}
+
+message TotalCurrencyMintedRecord {
+  string currencyName = 1;
+  int32 amount = 2;
+}
+
+message GetTopMintedCurrenciesResponse {
+  repeated TotalCurrencyMintedRecord records = 1;
+}

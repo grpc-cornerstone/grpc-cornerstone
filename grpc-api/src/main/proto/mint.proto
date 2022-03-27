@@ -8,13 +8,12 @@ option java_outer_classname = "MintProto";
 
 service MintService {
 
-rpc CreateCurrency (CreateCurrencyRequest)
- returns (CreateCurrencyResponse);
+  rpc CreateCurrency (CreateCurrencyRequest)
+      returns (CreateCurrencyResponse);
 
-rpc Mint (MintRequest) returns (MintResponse);
+  rpc Mint (MintRequest)
+      returns (MintResponse);
 
-rpc GetCurrenciesSorted (GetCurrenciesSortedRequest)
-     returns (GetCurrenciesSortedResponse);
 }
 
 message CreateCurrencyRequest {}
@@ -31,13 +30,3 @@ message MintResponse {
   int32 newAmount = 1;
 }
 
-message GetCurrenciesSortedRequest {}
-
-message CurrencyLedgerRecord {
-  string currencyName = 1;
-  int32 amount = 2;
-}
-
-message GetCurrenciesSortedResponse {
-  repeated CurrencyLedgerRecord records = 1;
-}
