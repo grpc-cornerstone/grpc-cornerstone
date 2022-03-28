@@ -20,7 +20,7 @@ repositories {
     mavenLocal()
 }
 
-def grpcVersion = '1.43.0'
+def grpcVersion = '1.45.0'
 def protobufVersion = '3.19.2'
 
 dependencies {
@@ -30,11 +30,12 @@ dependencies {
     implementation "io.grpc:grpc-netty:${grpcVersion}"
     implementation "io.grpc:grpc-protobuf:${grpcVersion}"
     implementation "io.grpc:grpc-stub:${grpcVersion}"
+    implementation "io.grpc:grpc-census:${grpcVersion}"
+    implementation "io.grpc:grpc-okhttp:${grpcVersion}"
     compileOnly "javax.annotation:javax.annotation-api:1.2"
 
     implementation "com.google.protobuf:protobuf-java-util:${protobufVersion}"
     implementation "xyz.cornerstone:grpc-api"
-    implementation "xyz.cornerstone:grpc-common"
 
     runtimeOnly "io.opencensus:opencensus-impl:0.30.0"
 
@@ -50,7 +51,7 @@ apply plugin: 'application'
 apply plugin: 'java'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-mainClassName = 'xyz.cornerstone.legder.LedgerServer'
+mainClassName = 'xyz.cornerstone.ledger.LedgerServer'
 
 shadowJar {
     mergeServiceFiles()

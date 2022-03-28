@@ -31,10 +31,6 @@ spec:
               value: "mint"
             - name: MINT_SERVICE_PORT
               value: "8091"
-            - name: ZIPKIN_SERVICE_HOST
-              value: "zipkin"
-            - name: ZIPKIN_SERVICE_PORT
-              value: "9411"
             - name: GCP_PROJECTID
               value: $GCP_PROJECT
 ---
