@@ -15,7 +15,7 @@ spec:
         app: gateway
     spec:
       containers:
-        - name: geese
+        - name: gateway
           image: eu.gcr.io/$GCP_PROJECT/gateway:latest
           imagePullPolicy: Always
           ports:
@@ -23,6 +23,14 @@ spec:
           env:
             - name: foobar
               value: "$(date +%s)"
+            - name: LEDGER_SERVICE_HOST
+              value: "ledger"
+            - name: LEDGER_SERVICE_PORT
+              value: "8092"
+            - name: MINT_SERVICE_HOST
+              value: "mint"
+            - name: MINT_SERVICE_PORT
+              value: "8091"
             - name: ZIPKIN_SERVICE_HOST
               value: "zipkin"
             - name: ZIPKIN_SERVICE_PORT
@@ -33,7 +41,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mint
+  name: gateway
 spec:
   type: LoadBalancer
   selector:

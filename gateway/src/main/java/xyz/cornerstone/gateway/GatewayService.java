@@ -1,9 +1,6 @@
 package xyz.cornerstone.gateway;
 
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
-import xyz.cornerstone.gateway.*;
 import xyz.cornerstone.ledger.GetTopMintedCurrenciesRequest;
 import xyz.cornerstone.ledger.GetTopMintedCurrenciesResponse;
 import xyz.cornerstone.ledger.LedgerServiceGrpc;
@@ -17,14 +14,9 @@ final class GatewayService extends GatewayServiceGrpc.GatewayServiceImplBase {
     private final LedgerServiceGrpc.LedgerServiceBlockingStub ledgerClient;
     private final MintServiceGrpc.MintServiceBlockingStub mintClient;
 
-
-    GatewayService() {
-        ManagedChannel ledgerChannel = ManagedChannelBuilder.forAddress("localhost", 8091).usePlaintext().build();
-        ledgerClient = LedgerServiceGrpc.newBlockingStub(ledgerChannel);
-
-        ManagedChannel mintChannel = ManagedChannelBuilder.forAddress("localhost", 8092).usePlaintext().build();
-        mintClient = MintServiceGrpc.newBlockingStub(mintChannel);
-
+    GatewayService(LedgerServiceGrpc.LedgerServiceBlockingStub ledgerClient, MintServiceGrpc.MintServiceBlockingStub mintClient) {
+        this.ledgerClient = ledgerClient;
+        this.mintClient = mintClient;
     }
 
     @Override

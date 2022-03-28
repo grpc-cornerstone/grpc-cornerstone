@@ -1,18 +1,9 @@
 package xyz.cornerstone.mint;
 
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.MoreExecutors;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 import xyz.cornerstone.ledger.LedgerServiceGrpc;
 import xyz.cornerstone.ledger.RecordMintingRequest;
 import xyz.cornerstone.ledger.RecordMintingResponse;
-import xyz.cornerstone.serviceB.CallBRequest;
-import xyz.cornerstone.serviceB.CallBResponse;
-import xyz.cornerstone.serviceB.ServiceBGrpc;
-import xyz.cornerstone.serviceC.CallCRequest;
-import xyz.cornerstone.serviceC.ServiceCGrpc;
 
 import java.util.Random;
 
@@ -26,12 +17,10 @@ final class MintService extends MintServiceGrpc.MintServiceImplBase {
     private final Random rnd;
 
 
-    MintService() {
-        ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8092).usePlaintext().build();
-
-        client = LedgerServiceGrpc.newBlockingStub(channel);
-        coinNameGenerator = new CoinNameGenerator();
-        rnd = new Random();
+    MintService(LedgerServiceGrpc.LedgerServiceBlockingStub client) {
+        this.client = client;
+        this.coinNameGenerator = new CoinNameGenerator();
+        this.rnd = new Random();
     }
 
     @Override

@@ -15,14 +15,18 @@ spec:
         app: mint
     spec:
       containers:
-        - name: geese
+        - name: mint
           image: eu.gcr.io/$GCP_PROJECT/mint:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 8092
+            - containerPort: 8091
           env:
             - name: foobar
               value: "$(date +%s)"
+            - name: LEDGER_SERVICE_HOST
+              value: "ledger"
+            - name: LEDGER_SERVICE_PORT
+              value: "8092"
             - name: ZIPKIN_SERVICE_HOST
               value: "zipkin"
             - name: ZIPKIN_SERVICE_PORT
@@ -39,8 +43,8 @@ spec:
   selector:
     app: mint
   ports:
-   - port: 8092
-     targetPort: 8092
+   - port: 8091
+     targetPort: 8091
      protocol: TCP
      name: grpc
 YAML
