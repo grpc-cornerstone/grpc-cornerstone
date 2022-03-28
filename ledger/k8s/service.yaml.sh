@@ -3,19 +3,19 @@ cat <<YAML
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: serviceC
+  name: ledger
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: serviceC
+      app: ledger
   template:
     metadata:
       labels:
-        app: serviceC
+        app: ledger
     spec:
       containers:
-        - name: geese
+        - name: ledger
           image: eu.gcr.io/$GCP_PROJECT/geese:latest
           imagePullPolicy: Always
           ports:
@@ -33,11 +33,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: serviceC
+  name: ledger
 spec:
   type: LoadBalancer
   selector:
-    app: serviceC
+    app: ledger
   ports:
    - port: 8092
      targetPort: 8092
