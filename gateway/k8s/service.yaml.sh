@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: eu.gcr.io/$GCP_PROJECT/gateway:latest
+          image: us-east1-docker.pkg.dev/$GCP_PROJECT/grpc-cornerstone/gateway:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8090
@@ -31,8 +31,6 @@ spec:
               value: "mint"
             - name: MINT_SERVICE_PORT
               value: "8091"
-            - name: GCP_PROJECTID
-              value: $GCP_PROJECT
 ---
 apiVersion: v1
 kind: Service

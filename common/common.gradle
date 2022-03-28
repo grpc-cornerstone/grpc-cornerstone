@@ -29,13 +29,13 @@ task buildDocker(type: com.bmuschko.gradle.docker.tasks.image.DockerBuildImage) 
 task tagDocker(type: Exec) {
     doFirst { checkGcpProject() }
     dependsOn buildDocker
-    commandLine 'docker', 'tag', "${project.name}:latest", "eu.gcr.io/${System.getenv().get("GCP_PROJECT")}/${project.name}:latest"
+    commandLine 'docker', 'tag', "${project.name}:latest", "us-east1-docker.pkg.dev/${System.getenv().get("GCP_PROJECT")}/grpc-cornerstone/${project.name}:latest"
 }
 
 task pushDocker(type: Exec) {
     doFirst { checkGcpProject() }
     dependsOn tagDocker
-    commandLine 'docker', '--', 'push', "eu.gcr.io/${System.getenv().get("GCP_PROJECT")}/${project.name}:latest"
+    commandLine 'docker', 'push', "us-east1-docker.pkg.dev/${System.getenv().get("GCP_PROJECT")}/grpc-cornerstone/${project.name}:latest"
 }
 
 task deploy(type: Exec) {

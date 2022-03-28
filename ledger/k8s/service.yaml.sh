@@ -16,19 +16,13 @@ spec:
     spec:
       containers:
         - name: ledger
-          image: eu.gcr.io/$GCP_PROJECT/geese:latest
+          image: us-east1-docker.pkg.dev/$GCP_PROJECT/grpc-cornerstone/ledger:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8092
           env:
             - name: foobar
               value: "$(date +%s)"
-            - name: ZIPKIN_SERVICE_HOST
-              value: "zipkin"
-            - name: ZIPKIN_SERVICE_PORT
-              value: "9411"
-            - name: GCP_PROJECTID
-              value: $GCP_PROJECT
 ---
 apiVersion: v1
 kind: Service
