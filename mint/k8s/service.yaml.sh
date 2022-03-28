@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mint
-          image: eu.gcr.io/$GCP_PROJECT/mint:latest
+          image: us-east1-docker.pkg.dev/$GCP_PROJECT/grpc-cornerstone/mint:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8091
@@ -27,12 +27,6 @@ spec:
               value: "ledger"
             - name: LEDGER_SERVICE_PORT
               value: "8092"
-            - name: ZIPKIN_SERVICE_HOST
-              value: "zipkin"
-            - name: ZIPKIN_SERVICE_PORT
-              value: "9411"
-            - name: GCP_PROJECTID
-              value: $GCP_PROJECT
 ---
 apiVersion: v1
 kind: Service

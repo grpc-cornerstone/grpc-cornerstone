@@ -8,13 +8,32 @@ import xyz.cornerstone.ledger.LedgerServiceGrpc;
 import xyz.cornerstone.mint.MintServiceGrpc;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 /**
  * Gateway entry point.
  */
 public class GatewayServer {
 
+    private static Logger LOG = null;
+
+    static {
+        InputStream stream = GatewayServer.class.getClassLoader().
+                getResourceAsStream("logging.properties");
+        try {
+            LogManager.getLogManager().readConfiguration(stream);
+            LOG = Logger.getLogger(GatewayServer.class.getName());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public static void main(String... args) throws IOException, InterruptedException {
+        LOG.info("Starting Gateway service");
         String ledgerHost = System.getenv().getOrDefault("LEDGER_SERVICE_HOST", "localhost");
         String ledgerPort = System.getenv().getOrDefault("LEDGER_SERVICE_PORT", "8092");
         ManagedChannel ledgerChannel = ManagedChannelBuilder
