@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-
+import GatewayServiceClient from './generated/GatewayServiceClientPb'
 import { useState } from 'react';
 import {
   BrowserRouter,
@@ -24,6 +24,7 @@ const Home = () => {
   const [currencyName, setCurrencyName] = useState<string>();
   const [coinsAmount, setCoinsAmount] = useState<number>();
 
+  const client = new GatewayServiceClient('http://34.75.57.125:80');
 
   // replace with a real call
   const doMint = () => {
