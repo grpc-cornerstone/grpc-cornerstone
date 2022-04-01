@@ -14,7 +14,7 @@ import {
   Route,
 } from "react-router-dom";
 import './App.css';
-import { CreateCurrencyGatewayRequest, MintGatewayRequest, MintGatewayResponse } from './generated/gateway_pb';
+import { CreateCurrencyGatewayRequest, GetTopMintedCurrenciesGatewayRequest, MintGatewayRequest, MintGatewayResponse } from './generated/gateway_pb';
 
 interface LeaderboardRecord {
   currencyName: string;
@@ -40,9 +40,9 @@ const Home = () => {
           console.log("Set currencyName=" + response.getCurrencyname());
           setCurrencyInitialized(true);
 
-          
+
           gwClient.mint(
-            new MintGatewayRequest(),
+            new MintGatewayRequest().setCurrencyname(response.getCurrencyname()),
             null,
             (err, response) => {
               setCoinsAmount(response.getNewamount());
@@ -50,7 +50,7 @@ const Home = () => {
               setMintingInProgress(false);
             }
           );
-            }
+        }
       );
     }
   }, [currencyInitialized]);
@@ -59,9 +59,9 @@ const Home = () => {
   // replace with a real call
   const doMint = () => {
     setMintingInProgress(true);
-    if (currencyInitialized) {
+    if (currencyInitialized && currencyName) {
       gwClient.mint(
-        new MintGatewayRequest(),
+        new MintGatewayRequest().setCurrencyname(currencyName),
         null,
         (err, response) => {
           setCoinsAmount(response.getNewamount());
@@ -86,7 +86,25 @@ const Home = () => {
 function Top5() {
 
   // replace with a real call
-  const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([{ currencyName: 'Dogecoin', coinsAmount: 100500 }, { currencyName: "BitCoin", coinsAmount: 1000 }]);
+  const [leaderboardInitialized, setLeaderboardInitialized] = useState<boolean>(false);
+  const [leaderboardLoading, setLeaderboardLoading] = useState<boolean>(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
+
+  useEffect(() => {
+    if (!leaderboardInitialized) {
+      gwClient.getTopMintedCurrencies(
+        new GetTopMintedCurrenciesGatewayRequest().setMaxnumberofcurrencies(5),
+        null,
+        (err, response) => {
+          const records = response.getRecordsList();
+          setLeaderboard(records.map(r => { return { currencyName: r.getCurrencyname(), coinsAmount: r.getAmount() }; }));
+          console.log("Set leaderboard " + JSON.stringify(records));
+          setLeaderboardInitialized(true);
+        }
+      );
+    }
+  }, [leaderboardInitialized]);
+
 
   const largeFont = {
     fontSize: '15pt',
