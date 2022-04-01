@@ -14,7 +14,7 @@ import {
   Route,
 } from "react-router-dom";
 import './App.css';
-import { CreateCurrencyGatewayRequest } from './generated/gateway_pb';
+import { CreateCurrencyGatewayRequest, MintGatewayRequest, MintGatewayResponse } from './generated/gateway_pb';
 
 interface LeaderboardRecord {
   currencyName: string;
@@ -27,39 +27,57 @@ const Home = () => {
   const [currencyInitialized, setCurrencyInitialized] = useState<boolean>(false);
   const [currencyName, setCurrencyName] = useState<string>();
   const [coinsAmount, setCoinsAmount] = useState<number>();
+  const [mintingInProgress, setMintingInProgress] = useState<boolean>(false);
 
 
   useEffect(() => {
     if (!currencyInitialized) {
-    gwClient.createCurrency(
-      new CreateCurrencyGatewayRequest(),
-      null,
-      (err, response) => {
-        setCurrencyName(response.getCurrencyname());
-        console.log("Set currencyName="+response.getCurrencyname());
-        setCurrencyInitialized(true);
-      }
-    );
-  }
+      gwClient.createCurrency(
+        new CreateCurrencyGatewayRequest(),
+        null,
+        (err, response) => {
+          setCurrencyName(response.getCurrencyname());
+          console.log("Set currencyName=" + response.getCurrencyname());
+          setCurrencyInitialized(true);
+
+          
+          gwClient.mint(
+            new MintGatewayRequest(),
+            null,
+            (err, response) => {
+              setCoinsAmount(response.getNewamount());
+              console.log("Set CoinsAmount=" + response.getNewamount());
+              setMintingInProgress(false);
+            }
+          );
+            }
+      );
+    }
   }, [currencyInitialized]);
 
 
   // replace with a real call
   const doMint = () => {
-    console.log((coinsAmount || 50) + 100);
-    setCoinsAmount((coinsAmount || 50) + 100);
-  }
-  // replace with a real call
-  if (!coinsAmount) {
-    setCoinsAmount(200);
+    setMintingInProgress(true);
+    if (currencyInitialized) {
+      gwClient.mint(
+        new MintGatewayRequest(),
+        null,
+        (err, response) => {
+          setCoinsAmount(response.getNewamount());
+          console.log("Set CoinsAmount=" + response.getNewamount());
+          setMintingInProgress(false);
+        }
+      );
+    }
   }
 
   return (
     <div className="App">
       <header className="App-header">
-        {currencyInitialized ? currencyName : 'Loading...'}
-        <p>{coinsAmount ? coinsAmount : ''}</p>
-        <Button variant="contained" onClick={doMint}>Mint</Button>
+        {currencyInitialized ? currencyName : 'Loading currency name...'}
+        <p>{coinsAmount && !mintingInProgress ? coinsAmount : 'Loading minted amount...'}</p>
+        <Button variant="contained" onClick={doMint} disabled={!currencyInitialized || mintingInProgress}>Mint</Button>
       </header>
     </div>
   );
