@@ -3,10 +3,10 @@ package xyz.cornerstone.ledger;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 /**
  * Implementation of ledgerService.
@@ -17,33 +17,32 @@ final class LedgerService extends LedgerServiceGrpc.LedgerServiceImplBase {
 
     @Override
     public void recordMinting(RecordMintingRequest request, StreamObserver<RecordMintingResponse> responseObserver) {
-        AtomicInteger total = currenciesTotal.computeIfAbsent(request.getCurrencyName(), s -> new AtomicInteger(0));
-        int newAmount = total.addAndGet(request.getIncrement());
+        currenciesTotal.computeIfAbsent(request.getCurrencyName(), s -> new AtomicInteger(0));
+        int newAmount = currenciesTotal.get(request.getCurrencyName()).addAndGet(request.getIncrement());
         responseObserver.onNext(RecordMintingResponse.newBuilder().setNewAmount(newAmount).build());
         responseObserver.onCompleted();
     }
 
-    @SuppressWarnings("Convert2MethodRef")
     @Override
     public void getTopMintedCurrencies(GetTopMintedCurrenciesRequest request, StreamObserver<GetTopMintedCurrenciesResponse> responseObserver) {
         Comparator<Map.Entry<String, AtomicInteger>> byValue = Comparator.comparing(e -> e.getValue().intValue());
-        Map<String, Integer> topCurrencies = currenciesTotal.entrySet().stream()
+        List<CurrencyRecord> topRecords = currenciesTotal.entrySet().stream()
                 .sorted(byValue.reversed())
                 .limit(request.getMaxNumberOfCurrencies())
-                .collect(Collectors.toMap(
-                        e -> e.getKey(),
-                        e -> e.getValue().intValue()
-                ));
+                .map(e -> new CurrencyRecord(e.getKey(), e.getValue().intValue()))
+                .toList();
 
         GetTopMintedCurrenciesResponse.Builder responseBuilder = GetTopMintedCurrenciesResponse.newBuilder();
-        topCurrencies.forEach(
-                (key, value) -> responseBuilder.addRecords(
-                        TotalCurrencyMintedRecord.newBuilder()
-                                .setCurrencyName(key)
-                                .setAmount(value)
-                                .build()));
+        topRecords.forEach(
+                r -> responseBuilder.addRecords(
+                            TotalCurrencyMintedRecord.newBuilder()
+                                    .setCurrencyName(r.currencyName)
+                                    .setAmount(r.amount)
+                                    .build()));
 
         responseObserver.onNext(responseBuilder.build());
-        super.getTopMintedCurrencies(request, responseObserver);
+        responseObserver.onCompleted();
     }
+
+    private record CurrencyRecord(String currencyName, int amount) {}
 }
