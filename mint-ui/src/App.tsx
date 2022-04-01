@@ -7,33 +7,47 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { GatewayServiceClient } from './generated/GatewayServiceClientPb'
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
 import './App.css';
+import { CreateCurrencyGatewayRequest } from './generated/gateway_pb';
 
 interface LeaderboardRecord {
   currencyName: string;
   coinsAmount: number;
 }
 
+const gwClient = new GatewayServiceClient('http://34.148.210.16:80');
+
 const Home = () => {
+  const [currencyInitialized, setCurrencyInitialized] = useState<boolean>(false);
   const [currencyName, setCurrencyName] = useState<string>();
   const [coinsAmount, setCoinsAmount] = useState<number>();
 
-  const client = new GatewayServiceClient('http://34.75.57.125:80');
+
+  useEffect(() => {
+    if (!currencyInitialized) {
+    gwClient.createCurrency(
+      new CreateCurrencyGatewayRequest(),
+      null,
+      (err, response) => {
+        setCurrencyName(response.getCurrencyname());
+        console.log("Set currencyName="+response.getCurrencyname());
+        setCurrencyInitialized(true);
+      }
+    );
+  }
+  }, [currencyInitialized]);
+
 
   // replace with a real call
   const doMint = () => {
     console.log((coinsAmount || 50) + 100);
     setCoinsAmount((coinsAmount || 50) + 100);
-  }
-  // replace with a real call
-  if (!currencyName) {
-    setCurrencyName("Dogecoin");
   }
   // replace with a real call
   if (!coinsAmount) {
@@ -43,7 +57,7 @@ const Home = () => {
   return (
     <div className="App">
       <header className="App-header">
-        {currencyName ? currencyName : 'Loading...'}
+        {currencyInitialized ? currencyName : 'Loading...'}
         <p>{coinsAmount ? coinsAmount : ''}</p>
         <Button variant="contained" onClick={doMint}>Mint</Button>
       </header>
