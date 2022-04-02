@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class CoinNameGenerator {
@@ -30,7 +31,9 @@ public class CoinNameGenerator {
         int randomSuffix = rnd.nextInt(MAX_NAME_SUFFIX);
         int randomPos = rnd.nextInt(prefixes.size());
         String randomName = prefixes.get(randomPos);
-        return randomName + "Coin" + String.format("%04d", randomSuffix);
+        String firstLetter = randomName.substring(0, 1).toUpperCase();
+        String remainder = randomName.substring(1);
+        return firstLetter + remainder + "Coin" + String.format("%04d", randomSuffix);
     }
 
 }
