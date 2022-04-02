@@ -75,9 +75,12 @@ const Home = () => {
   return (
     <div className="App">
       <header className="App-header">
-        {currencyInitialized ? currencyName : 'Loading currency name...'}
-        <p>{coinsAmount && !mintingInProgress ? coinsAmount : 'Loading minted amount...'}</p>
-        <Button variant="contained" onClick={doMint} disabled={!currencyInitialized || mintingInProgress}>Mint</Button>
+        <div><Top5Table/><br/><br/><br/></div>
+        <div>
+          {currencyInitialized ? currencyName : 'Loading currency name...'}
+          <p>{coinsAmount && !mintingInProgress ? coinsAmount : 'Loading minted amount...'}</p>
+          <Button variant="contained" onClick={doMint} disabled={!currencyInitialized || mintingInProgress}>Mint</Button>
+        </div>
       </header>
     </div>
   );
@@ -85,7 +88,6 @@ const Home = () => {
 
 function Top5() {
 
-  // replace with a real call
   const [leaderboardInitialized, setLeaderboardInitialized] = useState<boolean>(false);
   const [leaderboardLoading, setLeaderboardLoading] = useState<boolean>(false);
   const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
@@ -113,33 +115,63 @@ function Top5() {
   return (
     <div className="App">
       <header className="App-header">
-        <TableContainer sx={{ width: 500 }} component={Paper}>
-          <Table aria-label="table" sx={{ fontSize: 'x-large' }}>
-            <TableHead>
-              <TableRow>
-                <TableCell aria-label='th' sx={largeFont}><b>Currency name</b></TableCell>
-                <TableCell aria-label='th' sx={largeFont} align="right"><b>Coins minted</b></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(leaderboard || []).map((row) => (
-                <TableRow
-                  key={row.currencyName}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
-                  <TableCell scope="row" sx={largeFont}>
-                    {row.currencyName}
-                  </TableCell>
-                  <TableCell align="right" scope="row" sx={largeFont}>
-                    {row.coinsAmount}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Top5Table />
       </header>
     </div>
+  );
+}
+
+function Top5Table() {
+
+  const [leaderboardInitialized, setLeaderboardInitialized] = useState<boolean>(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
+
+  useEffect(() => {
+    if (!leaderboardInitialized) {
+      gwClient.getTopMintedCurrencies(
+        new GetTopMintedCurrenciesGatewayRequest().setMaxnumberofcurrencies(5),
+        null,
+        (err, response) => {
+          const records = response.getRecordsList();
+          setLeaderboard(records.map(r => { return { currencyName: r.getCurrencyname(), coinsAmount: r.getAmount() }; }));
+          console.log("Set leaderboard " + JSON.stringify(records));
+          setLeaderboardInitialized(true);
+        }
+      );
+    }
+  }, [leaderboardInitialized]);
+
+
+  const largeFont = {
+    fontSize: '15pt',
+  } as const;
+
+  return (
+    <TableContainer sx={{ width: 500 }} component={Paper}>
+      <Table aria-label="table" sx={{ fontSize: 'x-large' }}>
+        <TableHead>
+          <TableRow>
+            <TableCell aria-label='th' sx={largeFont}><b>Currency name</b></TableCell>
+            <TableCell aria-label='th' sx={largeFont} align="right"><b>Coins minted</b></TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {(leaderboard || []).map((row) => (
+            <TableRow
+              key={row.currencyName}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell scope="row" sx={largeFont}>
+                {row.currencyName}
+              </TableCell>
+              <TableCell align="right" scope="row" sx={largeFont}>
+                {row.coinsAmount}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 
