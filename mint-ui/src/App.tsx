@@ -155,7 +155,7 @@ function Top5Table(props: Top5TableProps) {
   } as const;
 
   return (
-    <TableContainer sx={{ width: 500 }} component={Paper}>
+    <TableContainer component={Paper}>
       <Table aria-label="table" sx={{ fontSize: 'x-large' }}>
         <TableHead>
           <TableRow>
