@@ -28,6 +28,7 @@ const Home = () => {
   const [currencyName, setCurrencyName] = useState<string>();
   const [coinsAmount, setCoinsAmount] = useState<number>();
   const [mintingInProgress, setMintingInProgress] = useState<boolean>(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
 
 
   useEffect(() => {
@@ -48,6 +49,17 @@ const Home = () => {
               setCoinsAmount(response.getNewamount());
               console.log("Set CoinsAmount=" + response.getNewamount());
               setMintingInProgress(false);
+
+              gwClient.getTopMintedCurrencies(
+                new GetTopMintedCurrenciesGatewayRequest().setMaxnumberofcurrencies(5),
+                null,
+                (err, response) => {
+                  const records = response.getRecordsList();
+                  setLeaderboard(records.map(r => { return { currencyName: r.getCurrencyname(), coinsAmount: r.getAmount() }; }));
+                  console.log("Set leaderboard " + JSON.stringify(records));
+                }
+              );
+    
             }
           );
         }
@@ -55,8 +67,6 @@ const Home = () => {
     }
   }, [currencyInitialized]);
 
-
-  // replace with a real call
   const doMint = () => {
     setMintingInProgress(true);
     if (currencyInitialized && currencyName) {
@@ -67,6 +77,17 @@ const Home = () => {
           setCoinsAmount(response.getNewamount());
           console.log("Set CoinsAmount=" + response.getNewamount());
           setMintingInProgress(false);
+
+          gwClient.getTopMintedCurrencies(
+            new GetTopMintedCurrenciesGatewayRequest().setMaxnumberofcurrencies(5),
+            null,
+            (err, response) => {
+              const records = response.getRecordsList();
+              setLeaderboard(records.map(r => { return { currencyName: r.getCurrencyname(), coinsAmount: r.getAmount() }; }));
+              console.log("Set leaderboard " + JSON.stringify(records));
+            }
+          );
+    
         }
       );
     }
@@ -75,7 +96,7 @@ const Home = () => {
   return (
     <div className="App">
       <header className="App-header">
-        <div><Top5Table/><br/><br/><br/></div>
+        <div><Top5Table records={leaderboard || []}/><br/><br/><br/></div>
         <div>
           {currencyInitialized ? currencyName : 'Loading currency name...'}
           <p>{coinsAmount && !mintingInProgress ? coinsAmount : 'Loading minted amount...'}</p>
@@ -89,7 +110,6 @@ const Home = () => {
 function Top5() {
 
   const [leaderboardInitialized, setLeaderboardInitialized] = useState<boolean>(false);
-  const [leaderboardLoading, setLeaderboardLoading] = useState<boolean>(false);
   const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
 
   useEffect(() => {
@@ -115,32 +135,20 @@ function Top5() {
   return (
     <div className="App">
       <header className="App-header">
-        <Top5Table />
+        <Top5Table records={leaderboard || []} />
       </header>
     </div>
   );
 }
 
-function Top5Table() {
+interface Top5TableProps {
+  records: LeaderboardRecord[]
+}
+
+function Top5Table(props: Top5TableProps) {
 
   const [leaderboardInitialized, setLeaderboardInitialized] = useState<boolean>(false);
   const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
-
-  useEffect(() => {
-    if (!leaderboardInitialized) {
-      gwClient.getTopMintedCurrencies(
-        new GetTopMintedCurrenciesGatewayRequest().setMaxnumberofcurrencies(5),
-        null,
-        (err, response) => {
-          const records = response.getRecordsList();
-          setLeaderboard(records.map(r => { return { currencyName: r.getCurrencyname(), coinsAmount: r.getAmount() }; }));
-          console.log("Set leaderboard " + JSON.stringify(records));
-          setLeaderboardInitialized(true);
-        }
-      );
-    }
-  }, [leaderboardInitialized]);
-
 
   const largeFont = {
     fontSize: '15pt',
@@ -156,7 +164,7 @@ function Top5Table() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {(leaderboard || []).map((row) => (
+          {(props.records).map((row) => (
             <TableRow
               key={row.currencyName}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
