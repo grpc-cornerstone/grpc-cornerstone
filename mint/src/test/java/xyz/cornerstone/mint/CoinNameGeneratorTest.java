@@ -17,6 +17,7 @@ class CoinNameGeneratorTest {
         String result = generator.generateRandomName();
 
         // then
+        System.out.println(result);
         assertThat(result).contains("Coin");
     }
 
