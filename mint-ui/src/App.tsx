@@ -5,7 +5,6 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import { GatewayServiceClient } from './generated/GatewayServiceClientPb'
 import { useEffect, useState } from 'react';
 import {
@@ -14,12 +13,25 @@ import {
   Route,
 } from "react-router-dom";
 import './App.css';
-import { CreateCurrencyGatewayRequest, GetTopMintedCurrenciesGatewayRequest, MintGatewayRequest, MintGatewayResponse } from './generated/gateway_pb';
+import { CreateCurrencyGatewayRequest, GetTopMintedCurrenciesGatewayRequest, MintGatewayRequest } from './generated/gateway_pb';
 
 interface LeaderboardRecord {
   currencyName: string;
   coinsAmount: number;
 }
+
+const largeWhiteFont = {
+  fontSize: '15pt',
+  color: 'white',
+  border: 'none',
+  padding: '8px 16px'
+} as const;
+
+
+const extraLargeFont = {
+  fontSize: '25pt',
+} as const;
+
 
 const gwClient = new GatewayServiceClient('http://34.148.210.16:80');
 
@@ -100,7 +112,7 @@ const Home = () => {
         <div>
           {currencyInitialized ? currencyName : 'Loading currency name...'}
           <p>{coinsAmount && !mintingInProgress ? coinsAmount : 'Loading minted amount...'}</p>
-          <Button variant="contained" onClick={doMint} disabled={!currencyInitialized || mintingInProgress}>Mint</Button>
+          <Button variant="contained" size="large" sx={extraLargeFont} onClick={doMint} disabled={!currencyInitialized || mintingInProgress}>Mint</Button>
         </div>
       </header>
     </div>
@@ -128,10 +140,6 @@ function Top5() {
   }, [leaderboardInitialized]);
 
 
-  const largeFont = {
-    fontSize: '15pt',
-  } as const;
-
   return (
     <div className="App">
       <header className="App-header">
@@ -147,20 +155,13 @@ interface Top5TableProps {
 
 function Top5Table(props: Top5TableProps) {
 
-  const [leaderboardInitialized, setLeaderboardInitialized] = useState<boolean>(false);
-  const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
-
-  const largeFont = {
-    fontSize: '15pt',
-  } as const;
-
   return (
-    <TableContainer component={Paper}>
+    <TableContainer>
       <Table aria-label="table" sx={{ fontSize: 'x-large' }}>
         <TableHead>
           <TableRow>
-            <TableCell aria-label='th' sx={largeFont}><b>Currency name</b></TableCell>
-            <TableCell aria-label='th' sx={largeFont} align="right"><b>Coins minted</b></TableCell>
+            <TableCell aria-label='th' sx={largeWhiteFont}><b>Currency name</b></TableCell>
+            <TableCell aria-label='th' sx={largeWhiteFont} align="right"><b># minted</b></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -169,10 +170,10 @@ function Top5Table(props: Top5TableProps) {
               key={row.currencyName}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell scope="row" sx={largeFont}>
+              <TableCell scope="row" sx={largeWhiteFont}>
                 {row.currencyName}
               </TableCell>
-              <TableCell align="right" scope="row" sx={largeFont}>
+              <TableCell align="right" scope="row" sx={largeWhiteFont}>
                 {row.coinsAmount}
               </TableCell>
             </TableRow>
