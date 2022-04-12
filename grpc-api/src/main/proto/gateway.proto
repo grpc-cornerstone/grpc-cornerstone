@@ -34,6 +34,7 @@ message MintGatewayResponse {
 
 message GetTopMintedCurrenciesGatewayRequest {
   int32 maxNumberOfCurrencies = 1;
+  string prefix = 2;
 }
 
 message TotalCurrencyMintedGatewayRecord {

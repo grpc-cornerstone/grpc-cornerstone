@@ -26,6 +26,7 @@ message RecordMintingResponse {
 
 message GetTopMintedCurrenciesRequest {
   int32 maxNumberOfCurrencies = 1;
+  string prefix = 2;
 }
 
 message TotalCurrencyMintedRecord {

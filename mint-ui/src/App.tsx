@@ -11,6 +11,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  useParams,
 } from "react-router-dom";
 import './App.css';
 import { CreateCurrencyGatewayRequest, GetTopMintedCurrenciesGatewayRequest, MintGatewayRequest } from './generated/gateway_pb';
@@ -123,11 +124,14 @@ function Top5() {
 
   const [leaderboardInitialized, setLeaderboardInitialized] = useState<boolean>(false);
   const [leaderboard, setLeaderboard] = useState<LeaderboardRecord[]>([]);
+  const { prefix } = useParams();
+
+  console.log("prefix: " + prefix);
 
   useEffect(() => {
     if (!leaderboardInitialized) {
       gwClient.getTopMintedCurrencies(
-        new GetTopMintedCurrenciesGatewayRequest().setMaxnumberofcurrencies(5),
+        new GetTopMintedCurrenciesGatewayRequest().setMaxnumberofcurrencies(5).setPrefix(prefix ? prefix : ''),
         null,
         (err, response) => {
           const records = response.getRecordsList();
@@ -143,7 +147,9 @@ function Top5() {
   return (
     <div className="App">
       <header className="App-header">
-        <Top5Table records={leaderboard || []} />
+        <div>
+          <Top5Table records={leaderboard || []} />
+        </div>
       </header>
     </div>
   );
@@ -190,7 +196,8 @@ const App = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="top5" element={<Top5 />} />
+        <Route path="top5" element = {<Top5 />} />
+        <Route path="top5/:prefix" element = {<Top5 />} />
       </Routes>
     </BrowserRouter>);
 };
