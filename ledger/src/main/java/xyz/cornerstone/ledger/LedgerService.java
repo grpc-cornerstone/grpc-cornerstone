@@ -4,6 +4,7 @@ import io.grpc.stub.StreamObserver;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,6 +28,7 @@ final class LedgerService extends LedgerServiceGrpc.LedgerServiceImplBase {
     public void getTopMintedCurrencies(GetTopMintedCurrenciesRequest request, StreamObserver<GetTopMintedCurrenciesResponse> responseObserver) {
         Comparator<Map.Entry<String, AtomicInteger>> byValue = Comparator.comparing(e -> e.getValue().intValue());
         List<CurrencyRecord> topRecords = currenciesTotal.entrySet().stream()
+                .filter(r -> filterByPrefix(request.getPrefix(), r.getKey()))
                 .sorted(byValue.reversed())
                 .limit(request.getMaxNumberOfCurrencies())
                 .map(e -> new CurrencyRecord(e.getKey(), e.getValue().intValue()))
@@ -42,6 +44,10 @@ final class LedgerService extends LedgerServiceGrpc.LedgerServiceImplBase {
 
         responseObserver.onNext(responseBuilder.build());
         responseObserver.onCompleted();
+    }
+
+    private boolean filterByPrefix(String prefix, String currencyName) {
+        return prefix == null || prefix.isBlank() || currencyName.toLowerCase().startsWith(prefix.toLowerCase());
     }
 
     private record CurrencyRecord(String currencyName, int amount) {}

@@ -43,6 +43,7 @@ final class GatewayService extends GatewayServiceGrpc.GatewayServiceImplBase {
     public void getTopMintedCurrencies(GetTopMintedCurrenciesGatewayRequest request, StreamObserver<GetTopMintedCurrenciesGatewayResponse> responseObserver) {
         GetTopMintedCurrenciesResponse topMintedCurrencies = ledgerClient.getTopMintedCurrencies(GetTopMintedCurrenciesRequest.newBuilder()
                 .setMaxNumberOfCurrencies(request.getMaxNumberOfCurrencies())
+                .setPrefix(request.getPrefix())
                 .build());
 
         GetTopMintedCurrenciesGatewayResponse.Builder responseBuilder = GetTopMintedCurrenciesGatewayResponse.newBuilder();

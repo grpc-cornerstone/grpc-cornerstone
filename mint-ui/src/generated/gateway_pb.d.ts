@@ -74,6 +74,9 @@ export class GetTopMintedCurrenciesGatewayRequest extends jspb.Message {
   getMaxnumberofcurrencies(): number;
   setMaxnumberofcurrencies(value: number): GetTopMintedCurrenciesGatewayRequest;
 
+  getPrefix(): string;
+  setPrefix(value: string): GetTopMintedCurrenciesGatewayRequest;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetTopMintedCurrenciesGatewayRequest.AsObject;
   static toObject(includeInstance: boolean, msg: GetTopMintedCurrenciesGatewayRequest): GetTopMintedCurrenciesGatewayRequest.AsObject;
@@ -85,6 +88,7 @@ export class GetTopMintedCurrenciesGatewayRequest extends jspb.Message {
 export namespace GetTopMintedCurrenciesGatewayRequest {
   export type AsObject = {
     maxnumberofcurrencies: number,
+    prefix: string,
   }
 }
 

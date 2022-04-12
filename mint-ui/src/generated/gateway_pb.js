@@ -698,7 +698,8 @@ proto.GetTopMintedCurrenciesGatewayRequest.prototype.toObject = function(opt_inc
  */
 proto.GetTopMintedCurrenciesGatewayRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    maxnumberofcurrencies: jspb.Message.getFieldWithDefault(msg, 1, 0)
+    maxnumberofcurrencies: jspb.Message.getFieldWithDefault(msg, 1, 0),
+    prefix: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -739,6 +740,10 @@ proto.GetTopMintedCurrenciesGatewayRequest.deserializeBinaryFromReader = functio
       var value = /** @type {number} */ (reader.readInt32());
       msg.setMaxnumberofcurrencies(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPrefix(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -775,6 +780,13 @@ proto.GetTopMintedCurrenciesGatewayRequest.serializeBinaryToWriter = function(me
       f
     );
   }
+  f = message.getPrefix();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
 };
 
 
@@ -793,6 +805,24 @@ proto.GetTopMintedCurrenciesGatewayRequest.prototype.getMaxnumberofcurrencies = 
  */
 proto.GetTopMintedCurrenciesGatewayRequest.prototype.setMaxnumberofcurrencies = function(value) {
   return jspb.Message.setProto3IntField(this, 1, value);
+};
+
+
+/**
+ * optional string prefix = 2;
+ * @return {string}
+ */
+proto.GetTopMintedCurrenciesGatewayRequest.prototype.getPrefix = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.GetTopMintedCurrenciesGatewayRequest} returns this
+ */
+proto.GetTopMintedCurrenciesGatewayRequest.prototype.setPrefix = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
