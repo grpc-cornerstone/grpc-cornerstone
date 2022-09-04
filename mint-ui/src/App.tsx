@@ -111,7 +111,7 @@ const Home = () => {
       <header className="App-header">
         <div><Top5Table records={leaderboard || []}/><br/><br/><br/></div>
         <div>
-          {currencyInitialized ? currencyName : 'Loading currency name...'}
+          <p><b>{currencyInitialized ? currencyName : 'Loading currency name...'}</b></p>
           <p>{coinsAmount && !mintingInProgress ? coinsAmount : 'Loading minted amount...'}</p>
           <Button variant="contained" size="large" sx={extraLargeFont} onClick={doMint} disabled={!currencyInitialized || mintingInProgress}>Mint</Button>
         </div>
