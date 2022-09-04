@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: ledger
-          image: us-east1-docker.pkg.dev/$GCP_PROJECT/grpc-cornerstone/ledger:latest
+          image: eu.gcr.io/$GCP_PROJECT/grpc-cornerstone/ledger:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8092

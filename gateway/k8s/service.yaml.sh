@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: gateway
-          image: us-east1-docker.pkg.dev/$GCP_PROJECT/grpc-cornerstone/gateway:latest
+          image: eu.gcr.io/$GCP_PROJECT/grpc-cornerstone/gateway:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8090

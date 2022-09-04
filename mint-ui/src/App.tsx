@@ -34,7 +34,7 @@ const extraLargeFont = {
 } as const;
 
 
-const gwClient = new GatewayServiceClient('http://34.148.210.16:80');
+const gwClient = new GatewayServiceClient('http://35.240.40.13:80');
 
 const Home = () => {
   const [currencyInitialized, setCurrencyInitialized] = useState<boolean>(false);
@@ -141,7 +141,7 @@ function Top5() {
         }
       );
     }
-  }, [leaderboardInitialized]);
+  }, [leaderboardInitialized, prefix]);
 
 
   return (
