@@ -15,11 +15,11 @@ variable "credentials_path" {
 
 # GKE cluster
 variable "project_id" {
-  default = "grpc-cornerstone"
+  default = "mint-361505"
 }
 
 variable "region" {
-  default = "us-east1"
+  default = "europe-west1"
 }
 
 provider "google" {
@@ -48,7 +48,7 @@ resource "google_container_cluster" "primary" {
 resource "google_artifact_registry_repository" "primary" {
   provider = google-beta
 
-  location = "us-east1"
+  location = "europe-west1"
   repository_id = "grpc-cornerstone"
   description = "grpc-cornerstone docker repository"
   format = "DOCKER"

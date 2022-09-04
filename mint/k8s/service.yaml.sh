@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: mint
-          image: us-east1-docker.pkg.dev/$GCP_PROJECT/grpc-cornerstone/mint:latest
+          image: eu.gcr.io/$GCP_PROJECT/grpc-cornerstone/mint:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8091

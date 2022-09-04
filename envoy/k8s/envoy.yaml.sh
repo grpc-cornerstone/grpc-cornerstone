@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: envoy
-          image: us-east1-docker.pkg.dev/$GCP_PROJECT/grpc-cornerstone/envoy:latest
+          image: eu.gcr.io/$GCP_PROJECT/grpc-cornerstone/envoy:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
