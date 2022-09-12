@@ -110,7 +110,9 @@ const Home = () => {
     <div className="App">
       <header className="App-header">
         <div><Top5Table records={leaderboard || []}/><br/><br/><br/></div>
+
         <div>
+          <hr/>
           <p><b>{currencyInitialized ? currencyName : 'Loading currency name...'}</b></p>
           <p>{coinsAmount && !mintingInProgress ? coinsAmount : 'Loading minted amount...'}</p>
           <Button variant="contained" size="large" sx={extraLargeFont} onClick={doMint} disabled={!currencyInitialized || mintingInProgress}>Mint</Button>
@@ -171,6 +173,7 @@ function Top5Table(props: Top5TableProps) {
           </TableRow>
         </TableHead>
         <TableBody>
+
           {(props.records).map((row) => (
             <TableRow
               key={row.currencyName}
