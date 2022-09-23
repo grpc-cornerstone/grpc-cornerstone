@@ -1,9 +1,9 @@
 package xyz.cornerstone.mint;
 
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-import io.grpc.Server;
-import io.grpc.ServerBuilder;
+import brave.Tracing;
+import brave.grpc.GrpcTracing;
+import brave.rpc.RpcTracing;
+import io.grpc.*;
 import xyz.cornerstone.ledger.LedgerServiceGrpc;
 
 import java.io.IOException;
@@ -33,11 +33,14 @@ public class MintServer {
     public static void main(String... args) throws IOException, InterruptedException {
         LOG.info("Starting Mint service");
 
+        GrpcTracing grpcTracing = GrpcTracing.create(RpcTracing.newBuilder(Tracing.newBuilder().build()).build());
+
         String ledgerHost = System.getenv().getOrDefault("LEDGER_SERVICE_HOST", "localhost");
         String ledgerPort = System.getenv().getOrDefault("LEDGER_SERVICE_PORT", "8092");
         ManagedChannel channel = ManagedChannelBuilder
                 .forAddress(ledgerHost, Integer.parseInt(ledgerPort))
                 .usePlaintext()
+                .intercept(grpcTracing.newClientInterceptor())
                 .build();
 
         LedgerServiceGrpc.LedgerServiceBlockingStub client = LedgerServiceGrpc.newBlockingStub(channel);
@@ -45,7 +48,7 @@ public class MintServer {
         MintService mintService = new MintService(client);
 
         Server server = ServerBuilder.forPort(8091)
-                .addService(mintService)
+                .addService(ServerInterceptors.intercept(mintService, grpcTracing.newServerInterceptor()))
                 .build();
         server.start();
 
