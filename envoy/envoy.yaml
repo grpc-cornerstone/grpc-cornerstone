@@ -15,6 +15,14 @@ static_resources:
                 "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
                 codec_type: auto
                 stat_prefix: ingress_http
+                tracing:
+                    provider:
+                      name: zipkin
+                      typed_config:
+                        "@type": type.googleapis.com/envoy.config.trace.v3.ZipkinConfig
+                        collector_cluster: zipkin
+                        collector_endpoint: "/api/v1/spans"
+                        collector_endpoint_version: HTTP_JSON
                 route_config:
                   name: local_route
                   virtual_hosts:
@@ -53,3 +61,31 @@ static_resources:
                     socket_address:
                       address: gateway
                       port_value: 8090
+    - name: zipkin
+      connect_timeout: 0.25s
+      type: logical_dns
+      http2_protocol_options: {}
+      lb_policy: round_robin
+      load_assignment:
+        cluster_name: zipkin_0
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: zipkin
+                      port_value: 9411
+tracing:
+  http:
+    name: envoy.tracers.opencensus
+    typed_config:
+      "@type": type.googleapis.com/envoy.config.trace.v3.OpenCensusConfig
+      traceConfig:
+        constantSampler:
+          decision: "ALWAYS_ON"
+      zipkin_exporter_enabled: true
+      zipkin_url: http://zipkin:9411/api/v2/spans
+      incoming_trace_context:
+        - B3
+      outgoing_trace_context:
+        - B3

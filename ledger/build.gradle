@@ -20,10 +20,12 @@ repositories {
     mavenLocal()
 }
 
-def grpcVersion = '1.45.0'
+def grpcVersion = '1.43.0'
 def protobufVersion = '3.19.2'
 
 dependencies {
+    implementation 'io.zipkin.brave:brave-instrumentation-grpc:5.14.0'
+
     implementation "com.google.api.grpc:proto-google-common-protos:2.7.1"
     implementation "io.grpc:grpc-alts:${grpcVersion}"
     implementation "io.grpc:grpc-netty-shaded:${grpcVersion}"

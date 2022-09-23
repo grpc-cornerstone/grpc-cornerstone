@@ -1,7 +1,11 @@
 package xyz.cornerstone.ledger;
 
+import brave.Tracing;
+import brave.grpc.GrpcTracing;
+import brave.rpc.RpcTracing;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import io.grpc.ServerInterceptors;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,11 +33,12 @@ public class LedgerServer {
 
     public static void main(String... args) throws IOException, InterruptedException {
         LOG.info("Starting Ledger service");
+        GrpcTracing grpcTracing = GrpcTracing.create(RpcTracing.newBuilder(Tracing.newBuilder().build()).build());
 
         LedgerService ledgerService = new LedgerService();
 
         Server server = ServerBuilder.forPort(8092)
-                .addService(ledgerService)
+                .addService(ServerInterceptors.intercept(ledgerService, grpcTracing.newServerInterceptor()))
                 .build();
         server.start();
 
